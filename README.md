@@ -1,5 +1,5 @@
-Author : Ifhaam </br>
-Date   : 26th June 2023
+<strong>Author<strong/> : Ifhaam </br>
+<strong>Date</strong>   : 26th June 2023
 
 # Notes
 	- all projects are in net6.0-lts
