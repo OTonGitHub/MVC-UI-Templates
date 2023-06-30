@@ -1,0 +1,140 @@
+﻿@model CascadingDropDown.Models.HolderModel;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <p>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <div class="container">
+                        <div class="row">
+                            @Html.LabelFor(model => model.ParentID)
+                        </div>
+                        <div class="row">
+                            @Html.DropDownListFor(model => model.ParentID, ViewBag.ParentList as SelectList, "- Choose Parent Item -", new {onchange="OnChange(this)"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="container">
+                        <div class="row">
+                            @Html.LabelFor(model => model.ChildID)
+                        </div>
+                        <div class="row">
+                            @Html.DropDownListFor(model => model.ChildID,  new SelectList(""), "- Choose Child Item -", new {disabled="disabled", id="ChildList"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="container">
+                        <div class="row">
+                            @Html.LabelFor(model => model.GrandChildID)
+                        </div>
+                        <div class="row">
+                            @Html.DropDownListFor(model => model.GrandChildID, new SelectList(""), "- Choose GrandChild Item -", new {disabled="disabled", id="grandChildList"})
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="container">
+                        <div class="row">
+                            @Html.LabelFor(model => model.GreatGrandChildID)
+                        </div>
+                        <div class="row">
+                            @Html.DropDownListFor(model => model.GreatGrandChildID, new SelectList(""), "- Choose GreatGrandChild Item -", new {disabled="disabled", id="greatGrandChildList"})
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </p>
+</div>
+
+@*Ifhaam: most appropriate data type for making select lists "Smart/Aware" would be to wrap them in a singly linkedlist, and pass a reference to nextChild at each node*@
+
+<script>
+    // VANILLA JAVASCRIPT + VIEWBAG
+    var countryList = @Html.Raw(Json.Serialize(ViewBag.Countries));
+    var foodList = @Html.Raw(Json.Serialize(ViewBag.Food));
+
+    function populateSelectElement(selectElement, listItems) {
+        listItems.forEach(function (row) {
+            var option = document.createElement("option")
+            option.value = row.value
+            option.textContent = row.text
+            selectElement.appendChild(option)
+        })
+    }
+
+    function OnChange(parentItem) {
+        var parentItem = parentItem.value
+        var childList = document.getElementById("ChildList")
+        var grandChildList = document.getElementById("grandChildList")
+
+        while (childList.firstChild != childList.lastChild) {
+            childList.removeChild(childList.lastChild)
+        }
+        while (grandChildList.firstChild != grandChildList.lastChild) {
+            grandChildList.removeChild(grandChildList.lastChild)
+        }
+
+        childList.disabled = false
+        grandChildList.disabled = true
+
+        switch (parentItem) {
+            case "1":
+                populateSelectElement(childList, countryList)
+                break
+            case "2":
+                populateSelectElement(childList, foodList)
+                break
+            default:
+                childList.disabled = "disabled"
+        }
+    }
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script>
+    // JQUERY AJAX
+    $('document').ready(function () {
+        $('#ChildList').on('change', (event) => {
+            var childListValue = event.target.value
+            $("#grandChildList option:not(:first)").remove();
+            if (childListValue === "") {
+                $('#grandChildList').prop('disabled', "disabled");
+            } else {
+                $('#grandChildList').prop('disabled', false);
+                $.get("/Home/GetGrandChildrenList", { childID: childListValue }, function (data) {
+                    $.each(data, function (index, row) {
+                        $("#grandChildList").append("<option value='" + row.value + "'>" + row.text + "</option>")
+                    });
+                });
+            }
+        })
+    });
+</script>
+
+<script>
+    // VANILLA JAVASCRIPT + XHR
+    
+    function populateSelectElement(selectElement, listItems) {
+        listItems.forEach(function (row) {
+            var option = document.createElement("option")
+            option.value = row.value
+            option.textContent = row.text
+            selectElement.appendChild(option)
+        })
+    }
+
+    var greatGrandChildList = document.getElementById("greatGrandChildList")
+
+    greatGrandChildList.addEventListener('change', function() {
+        console.log("changed")
+    }, false)
+</script>
