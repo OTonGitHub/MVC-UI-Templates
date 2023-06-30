@@ -1,4 +1,4 @@
-Author : Ifhaam
+Author : Ifhaam\n
 Date   : 26th June 2023
 
 # Notes
@@ -23,7 +23,7 @@ Date   : 26th June 2023
 	- if you want to add any fixes/updates/projects, re-init as git repository, commit changes, and provide zip folder,\n
 	  i will merge and update provided cloud folder with version, author and commit changes
 
-# Repacking Project for a Library
+# Repacking Project as a Library
 	- ideally, onchange functions must be bound to category value of selected item
 	- if category value remains the same, next list items will remian the same
 	- a more advanced way would be to have multiple category values in each item,
