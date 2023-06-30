@@ -19,6 +19,7 @@ namespace CascadingDropDown.Controllers
             // You'd only need to populate root list only on init, ideally
             // if not init, and on edit instead, then, use models with prepopulated lists and id fields
             // for ajax calls to puplate lists, keep select tag disabled, until data retreived, for better user experience.
+
             PopulateViewBags();
 
             return View(new HolderModel());

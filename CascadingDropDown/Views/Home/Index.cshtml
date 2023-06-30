@@ -133,8 +133,13 @@
     }
 
     var greatGrandChildList = document.getElementById("greatGrandChildList")
+    var grandChildList = document.getElementById("grandChildList")
 
-    greatGrandChildList.addEventListener('change', function() {
+    var foodList = @Html.Raw(Json.Serialize(ViewBag.Food))
+    populateSelectElement(greatGrandChildList, foodList)
+    greatGrandChildList.disabled = false
+
+    grandChildList.addEventListener('change', () => {
         console.log("changed")
     }, false)
 </script>
