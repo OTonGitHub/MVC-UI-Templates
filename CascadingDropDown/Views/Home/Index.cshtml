@@ -58,7 +58,7 @@
 @*Ifhaam: most appropriate data type for making select lists "Smart/Aware" would be to wrap them in a singly linkedlist, and pass a reference to nextChild at each node*@
 
 <script>
-    // VANILLA JAVASCRIPT + VIEWBAG
+    // VANILLA JAVASCRIPT + VIEWBAG -------------------------------------------------------
     var countryList = @Html.Raw(Json.Serialize(ViewBag.Countries));
     var foodList = @Html.Raw(Json.Serialize(ViewBag.Food));
 
@@ -97,11 +97,12 @@
                 childList.disabled = "disabled"
         }
     }
+    // ------------------------------------------------------------------------------------
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script>
-    // JQUERY AJAX
+    // JQUERY AJAX -------------------------------------------------------------------------------------------------
     $('document').ready(function () {
         $('#ChildList').on('change', (event) => {
             var childListValue = event.target.value
@@ -118,11 +119,11 @@
             }
         })
     });
+    // -------------------------------------------------------------------------------------------------------------
 </script>
 
 <script>
-    // VANILLA JAVASCRIPT + XHR
-    
+    // VANILLA JAVASCRIPT + XHR ---------------------------------------------------------------
     function populateSelectElement(selectElement, listItems) {
         listItems.forEach(function (row) {
             var option = document.createElement("option")
@@ -132,14 +133,38 @@
         })
     }
 
-    var greatGrandChildList = document.getElementById("greatGrandChildList")
     var grandChildList = document.getElementById("grandChildList")
-
-    var foodList = @Html.Raw(Json.Serialize(ViewBag.Food))
-    populateSelectElement(greatGrandChildList, foodList)
-    greatGrandChildList.disabled = false
+    var greatGrandChildList = document.getElementById("greatGrandChildList")
+    var defaultItem = greatGrandChildList.firstChild
 
     grandChildList.addEventListener('change', () => {
-        console.log("changed")
+        greatGrandChildList.innerHTML = '' // more performant, for a moment text may be null
+        greatGrandChildList.appendChild(defaultItem)
+
+        if (grandChildList.value === "") {
+            greatGrandChildList.disabled = true
+        }
+        else {
+            greatGrandChildList.disabled = true
+
+            let xhr = new XMLHttpRequest();
+            let url = 'Home/GetGrandChildrenList'
+            url += '?' + encodeURIComponent('childID') + '=' + encodeURIComponent(greatGrandChildList.value)
+
+            xhr.open('GET', url)
+            xhr.onreadystatechange = function () {
+                // request completed?
+                if (xhr.readyState !== 4) return;
+                if (xhr.status === 200) {
+                    response = JSON.parse(xhr.responseText)
+                    populateSelectElement(greatGrandChildList, response)
+                    greatGrandChildList.disabled = false
+                } else {
+                    console.log('HTTP error', xhr.status, xhr.statusText)
+                }
+            };
+            xhr.send()
+        }
     }, false)
+    // ----------------------------------------------------------------------------------------
 </script>
