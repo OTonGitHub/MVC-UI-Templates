@@ -75,6 +75,8 @@
         var parentItem = parentItem.value
         var childList = document.getElementById("ChildList")
         var grandChildList = document.getElementById("grandChildList")
+        var greatGrandChildList = document.getElementById("greatGrandChildList")
+
 
         while (childList.firstChild != childList.lastChild) {
             childList.removeChild(childList.lastChild)
@@ -82,9 +84,13 @@
         while (grandChildList.firstChild != grandChildList.lastChild) {
             grandChildList.removeChild(grandChildList.lastChild)
         }
+        while (greatGrandChildList.options.length > 1) {
+            greatGrandChildList.remove(greatGrandChildList.options.length - 1);
+        }
 
         childList.disabled = false
         grandChildList.disabled = true
+        greatGrandChildList.disabled = true
 
         switch (parentItem) {
             case "1":
@@ -107,6 +113,8 @@
         $('#ChildList').on('change', (event) => {
             var childListValue = event.target.value
             $("#grandChildList option:not(:first)").remove();
+            $("#greatGrandChildList option:not(:first)").remove();
+            $('#greatGrandChildList').prop('disabled', "disabled");
             if (childListValue === "") {
                 $('#grandChildList').prop('disabled', "disabled");
             } else {
@@ -123,7 +131,7 @@
 </script>
 
 <script>
-    // VANILLA JAVASCRIPT + XHR ---------------------------------------------------------------
+    // VANILLA JAVASCRIPT + XHR/Fetch ---------------------------------------------------------------
     function populateSelectElement(selectElement, listItems) {
         listItems.forEach(function (row) {
             var option = document.createElement("option")
@@ -137,34 +145,48 @@
     var greatGrandChildList = document.getElementById("greatGrandChildList")
     var defaultItem = greatGrandChildList.firstChild
 
+    var useFetchNotXHR = false;
+
     grandChildList.addEventListener('change', () => {
         greatGrandChildList.innerHTML = '' // more performant, for a moment text may be null
         greatGrandChildList.appendChild(defaultItem)
+
+        let url = 'Home/GetGrandChildrenList'
+        url += '?' + encodeURIComponent('childID') + '=' + encodeURIComponent(greatGrandChildList.value)
 
         if (grandChildList.value === "") {
             greatGrandChildList.disabled = true
         }
         else {
-            greatGrandChildList.disabled = true
-
-            let xhr = new XMLHttpRequest();
-            let url = 'Home/GetGrandChildrenList'
-            url += '?' + encodeURIComponent('childID') + '=' + encodeURIComponent(greatGrandChildList.value)
-
-            xhr.open('GET', url)
-            xhr.onreadystatechange = function () {
-                // request completed?
-                if (xhr.readyState !== 4) return;
-                if (xhr.status === 200) {
-                    response = JSON.parse(xhr.responseText)
-                    populateSelectElement(greatGrandChildList, response)
-                    greatGrandChildList.disabled = false
-                } else {
-                    console.log('HTTP error', xhr.status, xhr.statusText)
-                }
-            };
-            xhr.send()
+            if (!useFetchNotXHR) { // USING XMLHTTPRequest
+                greatGrandChildList.disabled = true
+                let xhr = new XMLHttpRequest();
+                xhr.open('GET', url)
+                xhr.onreadystatechange = function () {
+                    // request completed?
+                    if (xhr.readyState !== 4) return;
+                    if (xhr.status === 200) {
+                        response = JSON.parse(xhr.responseText)
+                        populateSelectElement(greatGrandChildList, response)
+                        greatGrandChildList.disabled = false
+                    } else {
+                        console.log('HTTP error', xhr.status, xhr.statusText)
+                    }
+                };
+                xhr.send();
+                useFetchNotXHR = true;
+            } else { // USING Fetch
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => { // json
+                        populateSelectElement(greatGrandChildList, data)
+                        greatGrandChildList.disabled = false
+                    })
+                    .catch(error => {
+                    });
+                useFetchNotXHR = false
+            } 
         }
     }, false)
-    // ----------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------
 </script>

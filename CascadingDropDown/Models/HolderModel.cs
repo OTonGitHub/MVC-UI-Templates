@@ -10,7 +10,7 @@ namespace CascadingDropDown.Models
         public int ParentID { get; set; }
 
 
-        [Display(Name = "Vanilla Javascript (ViewBag)")]
+        [Display(Name = "Pure Javascript (ViewBag)")]
         public int ChildID { get; set; }
 
 
@@ -18,7 +18,7 @@ namespace CascadingDropDown.Models
         public int GrandChildID { get; set; }
 
         
-        [Display(Name = "Vanilla Javascript with XHR")]
+        [Display(Name = "Pure Javascript + XHR/Fetch")]
         public int GreatGrandChildID { get; set; }
 
         public List<SelectListItem>? GrandChildren { get; set; }
