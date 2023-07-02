@@ -1,7 +1,7 @@
 <strong>Author</strong> : Ifhaam </br>
 <strong>Date</strong>   : 26th June 2023
 
-# HOW TO RUN
+# How to Build & Run
 	- all projects are built in .NET 6.0 (LTS), will be upgraded to .NET 8.0 (LTS) as soon
 	  as it comes out on november
 	- apart from CLI, project should run perfectly fine on VisualStudio 2022 and JB Rider
