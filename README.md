@@ -1,6 +1,16 @@
 <strong>Author</strong> : Ifhaam </br>
 <strong>Date</strong>   : 26th June 2023
 
+# HOW TO RUN
+	- all projects are built in .NET 6.0 (LTS), will be upgraded to .NET 8.0 (LTS) as soon
+	  as it comes out on november
+	- apart from CLI, project should run perfectly fine on VisualStudio 2022 and JB Rider
+	- however, VSCode with CLI is the recommended way to run, or using VSC build tool
+	- new (June 2023) C# dev kit extension with VSC is highly recommended
+	- for the CLI commands:
+		> dotnet restore
+		> dotnet run ./CascadingDropDown/CascadingDropDown.csproj
+
 # Notes
 	- all projects are in net6.0-lts
 	- if necessary other net versioned projs have net version append to project name,
